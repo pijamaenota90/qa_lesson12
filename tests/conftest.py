@@ -3,6 +3,15 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selene import browser
 from utils import attach
+from dotenv import load_dotenv
+import os
+
+@pytest.fixture(scope='session', autouse=True)
+def load_env():
+    load_dotenv()
+
+selenoid_login = os.getenv("SELENOID_LOGIN")
+selenoid_pass = os.getenv("SELENOID_PASS")
 
 
 @pytest.fixture(scope='function')
@@ -29,7 +38,7 @@ def browser_setup():
     options.capabilities.update(selenoid_capabilities)
 
     driver = webdriver.Remote(
-        command_executor="https://user1:1234@selenoid.autotests.cloud/wd/hub",
+        command_executor=f"https://{selenoid_login}:{selenoid_pass}@selenoid.autotests.cloud/wd/hub",
         options=options
     )
 
